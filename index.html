@@ -17,22 +17,27 @@
       font-family: 'Share Tech Mono', monospace;
       background: #0f0f0f;
       color: #00ffe1;
-      padding: 40px;
+      padding: 40px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      min-height: 100vh;
     }
 
     .menu-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
       cursor: pointer;
       background-color: #ff0055;
       color: #0f0f0f;
       padding: 10px 20px;
       font-size: 1.2rem;
       border-radius: 5px;
-      margin-bottom: 20px;
       transition: background 0.3s;
       text-align: center;
+      z-index: 1000;
     }
 
     .menu-toggle:hover {
@@ -41,13 +46,15 @@
 
     .dropdown {
       display: none;
-      width: 100%;
-      max-width: 800px;
-      margin-bottom: 20px;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      width: 200px;
       background-color: #121212;
       box-shadow: 0 0 10px #00ffe1;
       border-radius: 8px;
       padding: 10px;
+      z-index: 999;
     }
 
     .dropdown ul {
@@ -57,21 +64,25 @@
     .dropdown li {
       padding: 10px;
       border-bottom: 1px solid #222;
-      color: #00ffe1;
       transition: background 0.3s;
-      cursor: pointer;
     }
 
     .dropdown li:hover {
       background-color: #1f1f1f;
     }
 
+    .dropdown li a {
+      color: #00ffe1;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+
     h1 {
       font-size: 3rem;
       text-align: center;
-      margin-bottom: 30px;
+      margin: 80px 0 30px;
       color: #ff0055;
-      position: relative;
       animation: glitch 1s infinite;
     }
 
@@ -95,6 +106,19 @@
       color: #ff0055;
     }
 
+    .signature {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #888;
+      text-align: center;
+      font-style: italic;
+    }
+
+    .signature span {
+      color: #ff0055;
+      font-weight: bold;
+    }
+
     @keyframes glitch {
       0% { text-shadow: 2px 0 red, -2px 0 blue; }
       20% { text-shadow: -2px -1px red, 2px 1px blue; }
@@ -110,16 +134,16 @@
   <div class="menu-toggle" onclick="toggleMenu()">☰ Sessions</div>
   <div class="dropdown" id="sessionMenu">
     <ul>
-      <li>Session 1</li>
-      <li>Session 2</li>
-      <li>Session 3</li>
-      <li>Session 4</li>
-      <li>Session 5</li>
-      <li>Session 6</li>
-      <li>Session 7</li>
-      <li>Session 8</li>
-      <li>Session 9</li>
-      <li>Session 10</li>
+      <li><a href="#">Session 1</a></li>
+      <li><a href="#">Session 2</a></li>
+      <li><a href="#">Session 3</a></li>
+      <li><a href="#">Session 4</a></li>
+      <li><a href="#">Session 5</a></li>
+      <li><a href="#">Session 6</a></li>
+      <li><a href="#">Session 7</a></li>
+      <li><a href="#">Session 8</a></li>
+      <li><a href="#">Session 9</a></li>
+      <li><a href="#">Session 10</a></li>
     </ul>
   </div>
 
@@ -144,13 +168,17 @@
     <div class="info-item"><strong>Geolocation:</strong> <span id="geo">Loading...</span></div>
   </div>
 
+  <!-- Owner Signature placed at the end of the body -->
+  <footer class="signature">
+    Made with <span>New Lord Joel James Tech</span>
+  </footer>
+
   <script>
     function toggleMenu() {
       const menu = document.getElementById("sessionMenu");
       menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
 
-    // Fetch IP and location from public API
     fetch('https://ipapi.co/json/')
       .then(res => res.json())
       .then(data => {
@@ -162,7 +190,6 @@
         document.getElementById("location").textContent = "Unavailable";
       });
 
-    // Battery API
     if (navigator.getBattery) {
       navigator.getBattery().then(battery => {
         function updateBattery() {
@@ -206,5 +233,6 @@
       document.getElementById("geo").textContent = "Geolocation not supported";
     }
   </script>
+
 </body>
   </html>
