@@ -2,9 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>InfoTracker</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: #0f0f0f;
+      color: #00ffe1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #ff0055;
+      position: relative;
+      animation: glitch 1s infinite;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      background-color: #121212;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #00ffe1;
+    }
+
+    .info-item {
+      margin: 10px 0;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #222;
+      padding-bottom: 8px;
+    }
+
+    .info-item strong {
+      color: #ff0055;
+    }
+
+    /* Glitch effect */
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px -1px red, 2px 1px blue; }
+      40% { text-shadow: 2px 2px red, -2px -2px blue; }
+      60% { text-shadow: 2px -2px red, -2px 2px blue; }
+      80% { text-shadow: -2px 2px red, 2px -2px blue; }
+      100% { text-shadow: 2px 0 red, -2px 0 blue; }
+    }
+  </style>
 </head>
 <body>
   <h1>InfoTracker</h1>
@@ -27,6 +84,43 @@
     <div class="info-item"><strong>Geolocation:</strong> <span id="geo">Loading...</span></div>
   </div>
 
-  <script src="main.js"></script>
+  <script>
+    // Sample placeholders for demonstration. You'd replace this with actual detection logic.
+    document.getElementById("ip").textContent = "192.168.0.1";
+    document.getElementById("location").textContent = "Unknown";
+    document.getElementById("battery").textContent = "Checking...";
+    document.getElementById("connection").textContent = navigator.connection ? navigator.connection.effectiveType : "Unavailable";
+    document.getElementById("device").textContent = navigator.userAgent;
+    document.getElementById("browser").textContent = navigator.appName + " " + navigator.appVersion;
+    document.getElementById("os").textContent = navigator.platform;
+    document.getElementById("screen").textContent = `${screen.width}x${screen.height}`;
+    document.getElementById("language").textContent = navigator.language;
+    document.getElementById("cookies").textContent = navigator.cookieEnabled ? "Yes" : "No";
+    document.getElementById("dnt").textContent = navigator.doNotTrack;
+    document.getElementById("timezone").textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById("online").textContent = navigator.onLine ? "Online" : "Offline";
+    document.getElementById("storage").textContent = typeof(Storage) !== "undefined" ? "Available" : "Not Supported";
+    document.getElementById("platform").textContent = navigator.platform;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          document.getElementById("geo").textContent = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+        },
+        error => {
+          document.getElementById("geo").textContent = "Permission denied or unavailable";
+        }
+      );
+    } else {
+      document.getElementById("geo").textContent = "Geolocation not supported";
+    }
+
+    // Battery API
+    if (navigator.getBattery) {
+      navigator.getBattery().then(battery => {
+        document.getElementById("battery").textContent = `${(battery.level * 100).toFixed(0)}% ${battery.charging ? "(Charging)" : ""}`;
+      });
+    }
+  </script>
 </body>
-                                                          </html>
+  </html>
