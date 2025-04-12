@@ -182,10 +182,11 @@
   <footer class="signature">
     Made with <span>New Lord Joel James Tech</span>
   </footer>
+
   <script>
     function toggleMenu() {
       const menu = document.getElementById("sessionMenu");
-      menu.style.display = menu.style.display === "block" ? "none" : "block";
+      menu.classList.toggle("show");
     }
 
     fetch('https://ipapi.co/json/')
@@ -245,3 +246,5 @@
 
 </body>
   </html>
+
+
