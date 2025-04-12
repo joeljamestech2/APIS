@@ -23,6 +23,49 @@
       align-items: center;
     }
 
+    .menu-toggle {
+      cursor: pointer;
+      background-color: #ff0055;
+      color: #0f0f0f;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      transition: background 0.3s;
+      text-align: center;
+    }
+
+    .menu-toggle:hover {
+      background-color: #ff3366;
+    }
+
+    .dropdown {
+      display: none;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 20px;
+      background-color: #121212;
+      box-shadow: 0 0 10px #00ffe1;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .dropdown ul {
+      list-style: none;
+    }
+
+    .dropdown li {
+      padding: 10px;
+      border-bottom: 1px solid #222;
+      color: #00ffe1;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .dropdown li:hover {
+      background-color: #1f1f1f;
+    }
+
     h1 {
       font-size: 3rem;
       text-align: center;
@@ -52,7 +95,6 @@
       color: #ff0055;
     }
 
-    /* Glitch effect */
     @keyframes glitch {
       0% { text-shadow: 2px 0 red, -2px 0 blue; }
       20% { text-shadow: -2px -1px red, 2px 1px blue; }
@@ -64,7 +106,25 @@
   </style>
 </head>
 <body>
+
+  <div class="menu-toggle" onclick="toggleMenu()">☰ Sessions</div>
+  <div class="dropdown" id="sessionMenu">
+    <ul>
+      <li>Session 1</li>
+      <li>Session 2</li>
+      <li>Session 3</li>
+      <li>Session 4</li>
+      <li>Session 5</li>
+      <li>Session 6</li>
+      <li>Session 7</li>
+      <li>Session 8</li>
+      <li>Session 9</li>
+      <li>Session 10</li>
+    </ul>
+  </div>
+
   <h1>InfoTracker</h1>
+
   <div class="container">
     <div class="info-item"><strong>IP Address:</strong> <span id="ip">Loading...</span></div>
     <div class="info-item"><strong>Location:</strong> <span id="location">Loading...</span></div>
@@ -85,13 +145,44 @@
   </div>
 
   <script>
-    // Sample placeholders for demonstration. You'd replace this with actual detection logic.
-    document.getElementById("ip").textContent = "192.168.0.1";
-    document.getElementById("location").textContent = "Unknown";
-    document.getElementById("battery").textContent = "Checking...";
-    document.getElementById("connection").textContent = navigator.connection ? navigator.connection.effectiveType : "Unavailable";
+    function toggleMenu() {
+      const menu = document.getElementById("sessionMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    // Fetch IP and location from public API
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("ip").textContent = data.ip;
+        document.getElementById("location").textContent = `${data.city}, ${data.region}, ${data.country_name}`;
+      })
+      .catch(() => {
+        document.getElementById("ip").textContent = "Unavailable";
+        document.getElementById("location").textContent = "Unavailable";
+      });
+
+    // Battery API
+    if (navigator.getBattery) {
+      navigator.getBattery().then(battery => {
+        function updateBattery() {
+          document.getElementById("battery").textContent = `${(battery.level * 100).toFixed(0)}% ${battery.charging ? "(Charging)" : ""}`;
+        }
+        updateBattery();
+        battery.addEventListener('levelchange', updateBattery);
+        battery.addEventListener('chargingchange', updateBattery);
+      });
+    }
+
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn) {
+      document.getElementById("connection").textContent = `Type: ${conn.type || 'N/A'}, Speed: ${conn.downlink} Mbps`;
+    } else {
+      document.getElementById("connection").textContent = "Unavailable";
+    }
+
     document.getElementById("device").textContent = navigator.userAgent;
-    document.getElementById("browser").textContent = navigator.appName + " " + navigator.appVersion;
+    document.getElementById("browser").textContent = navigator.userAgent;
     document.getElementById("os").textContent = navigator.platform;
     document.getElementById("screen").textContent = `${screen.width}x${screen.height}`;
     document.getElementById("language").textContent = navigator.language;
@@ -113,13 +204,6 @@
       );
     } else {
       document.getElementById("geo").textContent = "Geolocation not supported";
-    }
-
-    // Battery API
-    if (navigator.getBattery) {
-      navigator.getBattery().then(battery => {
-        document.getElementById("battery").textContent = `${(battery.level * 100).toFixed(0)}% ${battery.charging ? "(Charging)" : ""}`;
-      });
     }
   </script>
 </body>
