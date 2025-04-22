@@ -105,7 +105,7 @@
   <div class="container">
     <h2><i class="fas fa-wand-magic-sparkles"></i> GFX Maker</h2>
     <form onsubmit="return false;">
-      <input type="text" id="name" placeholder="inter your name" required />
+      <input type="text" id="name" placeholder="enter your name" required />
       <input type="button" value="Make GFX Now" onclick="deploy();" />
     </form>
     <p class="footer">made by <strong>Lord Joel</strong> | thanks to you</p>
@@ -118,10 +118,8 @@
         document.getElementById('name').focus();
         return;
       }
-      const repoUser = "Stanking11";
-      const repoName = "STANY-TXR-ZMD";
-      const deployURL = `https://api.nexoracle.com/image-creating/gfx12?apikey=33241c3a8402295fdc&text=${nameInput}`;
-      window.location.href = deployURL;
+      const deployURL = `https://api.nexoracle.com/image-creating/gfx12?apikey=33241c3a8402295fdc&text=${encodeURIComponent(name)}`;
+      window.open(deployURL, '_blank'); // Opens the URL in a new tab
     }
   </script>
 
