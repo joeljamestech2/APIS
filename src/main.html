@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GFX Maker by Lord Joel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      font-family: 'JetBrains Mono', monospace;
+      color: white;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .tool {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .tool:hover {
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+      transform: translateY(-5px) scale(1.03);
+    }
+
+    .tool i {
+      font-size: 2rem;
+      color: #00ffff;
+      margin-bottom: 1rem;
+    }
+
+    .tool h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      margin: 0;
+    }
+
+    .muted {
+      font-size: 0.9rem;
+      color: #bbb;
+      margin-top: 0.5rem;
+    }
+
+    .extras {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 2rem 2rem;
+    }
+
+    .extras .tool {
+      width: 250px;
+    }
+  </style>
+</head>
+<body>
+  <div class="tools">
+    <div class="tool" onclick="window.open(`/G1`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 1</h3>
+      <p class="muted">Make GFX via GFX1</p>
+    </div>
+    <div class="tool" onclick="window.open(`/G2`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 2</h3>
+      <p class="muted">Make GFX via GFX2</p>
+    </div>
+    <div class="tool" onclick="window.open(`/G3`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 3</h3>
+      <p class="muted">Make GFX via GFX3</p>
+    </div>
+    <div class="tool" onclick="window.open(`/G4`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 4</h3>
+      <p class="muted">Make GFX via GFX4</p>
+    </div>
+    <div class="tool" onclick="window.open(`/G5`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 5</h3>
+      <p class="muted">Make GFX via GFX5</p>
+    </div>
+    <div class="tool" onclick="window.open(`/G6`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 6</h3>
+      <p class="muted">Make GFX via GFX6</p>
+    </div>
+    <div class="tool" onclick="window.open(`/G7`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 7</h3>
+      <p class="muted">Make GFX via GFX7</p>
+    </div>
+    <div class="tool" onclick="window.open(`/G8`)">
+      <i class="fas fa-image"></i>
+      <h3>GFX 8</h3>
+      <p class="muted">Make GFX via GFX8</p>
+    </div>
+  </div>
+
+  <div class="extras">
+    <div class="tool" onclick="window.open('/music')">
+      <i class="fas fa-music"></i>
+      <h3>Music</h3>
+      <p class="muted">Listen & vibe with Lord Joel</p>
+    </div>
+    <div class="tool" onclick="window.open('/follow')">
+      <i class="fas fa-bell"></i>
+      <h3>Follow Channel</h3>
+      <p class="muted">Stay updated on GFX drops</p>
+    </div>
+  </div>
+</body>
+  </html>
