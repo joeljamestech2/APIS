@@ -162,7 +162,7 @@
       try {
         const response = await fetch('https://apis.davidcyriltech.my.id/hentai');
         const data = await response.json();
-        const gfxURL = data?.url;
+        const gfxURL = data?.video_2;
 
         if (gfxURL) {
           window.open(gfxURL, '_blank');
