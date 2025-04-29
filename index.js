@@ -78,7 +78,7 @@ app.get('/dlytmp4', async (req, res) => {
 // meme
 app.get('/meme', async (req, res) => {
     try {
-        const meme = await axios.get('https://meme-api.com/gimme');
+        const meme = await axios.get('https://api.imgflip.com/get_memes');
         sendVerticalJson(res, {
             creator: CREATOR,
             title: meme.data.title,
