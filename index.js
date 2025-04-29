@@ -6,98 +6,127 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const CREATOR = 'joeljamestech';
 
 app.use(express.json());
 
-// Root Endpoint
+// Root
 app.get('/', (req, res) => {
-    res.send('Welcome to Joel XMD Bot API!');
+    res.json({
+        creator: CREATOR,
+        message: 'Welcome to Joel XMD API!',
+        endpoints: [
+            '/dlytmp3',
+            '/dlytmp4',
+            '/meme',
+            '/gpt',
+            '/deepseek'
+        ]
+    });
 });
 
-// Endpoint: dlytmp3
+// /dlytmp3
 app.get('/dlytmp3', async (req, res) => {
     const { url } = req.query;
-    if (!url) return res.status(400).send({ error: 'Missing YouTube URL' });
+    if (!url) return res.status(400).json({ creator: CREATOR, error: 'Missing YouTube URL' });
 
     try {
         const info = await ytdl.getInfo(url);
         const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
         if (!audioFormats.length) throw new Error('No audio formats found.');
 
-        res.json({ audioUrl: audioFormats[0].url });
+        res.json({
+            creator: CREATOR,
+            title: info.videoDetails.title,
+            format: 'mp3',
+            audio_url: audioFormats[0].url
+        });
     } catch (err) {
-        res.status(500).send({ error: 'Failed to fetch MP3', details: err.message });
+        res.status(500).json({ creator: CREATOR, error: err.message });
     }
 });
 
-// Endpoint: dlytmp4
+// /dlytmp4
 app.get('/dlytmp4', async (req, res) => {
     const { url } = req.query;
-    if (!url) return res.status(400).send({ error: 'Missing YouTube URL' });
+    if (!url) return res.status(400).json({ creator: CREATOR, error: 'Missing YouTube URL' });
 
     try {
         const info = await ytdl.getInfo(url);
         const videoFormats = ytdl.filterFormats(info.formats, 'videoandaudio');
         if (!videoFormats.length) throw new Error('No video formats found.');
 
-        res.json({ videoUrl: videoFormats[0].url });
+        res.json({
+            creator: CREATOR,
+            title: info.videoDetails.title,
+            format: 'mp4',
+            video_url: videoFormats[0].url
+        });
     } catch (err) {
-        res.status(500).send({ error: 'Failed to fetch MP4', details: err.message });
+        res.status(500).json({ creator: CREATOR, error: err.message });
     }
 });
 
-// Endpoint: meme
+// /meme
 app.get('/meme', async (req, res) => {
     try {
         const meme = await axios.get('https://meme-api.com/gimme');
         res.json({
+            creator: CREATOR,
             title: meme.data.title,
-            postLink: meme.data.postLink,
-            url: meme.data.url,
-            subreddit: meme.data.subreddit
+            subreddit: meme.data.subreddit,
+            post_link: meme.data.postLink,
+            image_url: meme.data.url
         });
     } catch (err) {
-        res.status(500).send({ error: 'Failed to fetch meme', details: err.message });
+        res.status(500).json({ creator: CREATOR, error: err.message });
     }
 });
 
-// Endpoint: gpt
+// /gpt
 app.post('/gpt', async (req, res) => {
     const { prompt } = req.body;
-    if (!prompt) return res.status(400).send({ error: 'Missing prompt' });
+    if (!prompt) return res.status(400).json({ creator: CREATOR, error: 'Missing prompt' });
 
     try {
-        const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-        const openai = new OpenAIApi(configuration);
+        const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
+        const openai = new OpenAIApi(config);
 
         const response = await openai.createChatCompletion({
             model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: prompt }],
+            messages: [{ role: 'user', content: prompt }]
         });
 
-        res.json({ response: response.data.choices[0].message.content });
+        res.json({
+            creator: CREATOR,
+            prompt: prompt,
+            response: response.data.choices[0].message.content
+        });
     } catch (err) {
-        res.status(500).send({ error: 'Failed to fetch GPT response', details: err.message });
+        res.status(500).json({ creator: CREATOR, error: err.message });
     }
 });
 
-// Endpoint: deepseek
+// /deepseek
 app.post('/deepseek', async (req, res) => {
     const { query } = req.body;
-    if (!query) return res.status(400).send({ error: 'Missing query' });
+    if (!query) return res.status(400).json({ creator: CREATOR, error: 'Missing query' });
 
     try {
         const response = await axios.post('https://api.deepseek.com/search', { query }, {
             headers: { Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}` }
         });
 
-        res.json({ results: response.data });
+        res.json({
+            creator: CREATOR,
+            query: query,
+            results: response.data
+        });
     } catch (err) {
-        res.status(500).send({ error: 'Failed to fetch DeepSeek results', details: err.message });
+        res.status(500).json({ creator: CREATOR, error: err.message });
     }
 });
 
-// Start server
 app.listen(PORT, () => {
-    console.log(`✅ Server is running on port ${PORT}`);
+    console.log(`✅ Joel XMD API running on port ${PORT}`);
 });
