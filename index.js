@@ -8,14 +8,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const CREATOR = 'joeljamestech';
 
+// Middleware
 app.use(express.json());
 
 // Helper function to send vertical JSON
-function sendVerticalJson(res, obj, statusCode = 200) {
+function sendVerticalJson(res, obj, status = 200) {
     let jsonString = JSON.stringify(obj, null, 0);
     jsonString = jsonString.replace(/,/g, ',\n');
-    res.setHeader('Content-Type', 'application/json');
-    res.status(statusCode).send(jsonString);
+    res.status(status).setHeader('Content-Type', 'application/json');
+    res.send(jsonString);
 }
 
 // Root endpoint
@@ -35,8 +36,7 @@ app.get('/', (req, res) => {
 
 // dlytmp3 - YouTube Audio Downloader
 app.get('/dlytmp3', async (req, res) => {
-    const { url } = req.query;
-    if (!url) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing YouTube URL' }, 400);
+    const url = req.query.url || 'https://youtube.com/watch?v=50VNCymT-Cs';
 
     try {
         const info = await ytdl.getInfo(url);
@@ -56,8 +56,7 @@ app.get('/dlytmp3', async (req, res) => {
 
 // dlytmp4 - YouTube Video Downloader
 app.get('/dlytmp4', async (req, res) => {
-    const { url } = req.query;
-    if (!url) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing YouTube URL' }, 400);
+    const url = req.query.url || 'https://youtube.com/watch?v=50VNCymT-Cs';
 
     try {
         const info = await ytdl.getInfo(url);
@@ -75,25 +74,25 @@ app.get('/dlytmp4', async (req, res) => {
     }
 });
 
-// meme - Get random meme from Meme API
+// meme - Random Meme Fetcher
 app.get('/meme', async (req, res) => {
     try {
-        const memeResponse = await axios.get('https://meme-api.com/gimme');
-        const meme = memeResponse.data;
+        const response = await axios.get('https://meme-api.com/gimme');
+        const meme = response.data;
 
         sendVerticalJson(res, {
             creator: CREATOR,
             title: meme.title,
-            post_link: meme.postLink,
             subreddit: meme.subreddit,
+            post_link: meme.postLink,
             image_url: meme.url
         });
     } catch (err) {
-        sendVerticalJson(res, { creator: CREATOR, error: 'Failed to fetch meme' }, 400);
+        sendVerticalJson(res, { creator: CREATOR, error: err.message }, 500);
     }
 });
 
-// gpt - Chat with GPT
+// gpt - OpenAI Chatbot
 app.post('/gpt', async (req, res) => {
     const { prompt } = req.body;
     if (!prompt) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing prompt' }, 400);
@@ -113,35 +112,31 @@ app.post('/gpt', async (req, res) => {
             response: response.data.choices[0].message.content
         });
     } catch (err) {
-        sendVerticalJson(res, { creator: CREATOR, error: 'GPT Error' }, 400);
+        sendVerticalJson(res, { creator: CREATOR, error: err.message }, 500);
     }
 });
 
-// deepseek - Alternative GPT
+// deepseek - DeepSeek AI Search
 app.post('/deepseek', async (req, res) => {
     const { query } = req.body;
     if (!query) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing query' }, 400);
 
     try {
-        const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-        const openai = new OpenAIApi(config);
-
-        const response = await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: query }]
+        const response = await axios.post('https://api.deepseek.com/search', { query }, {
+            headers: { Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}` }
         });
 
         sendVerticalJson(res, {
             creator: CREATOR,
             query: query,
-            response: response.data.choices[0].message.content
+            results: response.data
         });
     } catch (err) {
-        sendVerticalJson(res, { creator: CREATOR, error: 'DeepSeek Error' }, 400);
+        sendVerticalJson(res, { creator: CREATOR, error: err.message }, 500);
     }
 });
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
     console.log(`✅ Joel XMD API is running on port ${PORT}`);
 });
