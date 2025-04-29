@@ -10,9 +10,17 @@ const CREATOR = 'joeljamestech';
 
 app.use(express.json());
 
-// Root
+// Helper function to send vertical JSON
+function sendVerticalJson(res, obj) {
+    let jsonString = JSON.stringify(obj, null, 0);
+    jsonString = jsonString.replace(/,/g, ',\n');
+    res.setHeader('Content-Type', 'application/json');
+    res.send(jsonString);
+}
+
+// Root endpoint
 app.get('/', (req, res) => {
-    res.json({
+    sendVerticalJson(res, {
         creator: CREATOR,
         message: 'Welcome to Joel XMD API!',
         endpoints: [
@@ -25,53 +33,53 @@ app.get('/', (req, res) => {
     });
 });
 
-// /dlytmp3
+// dlytmp3
 app.get('/dlytmp3', async (req, res) => {
     const { url } = req.query;
-    if (!url) return res.status(400).json({ creator: CREATOR, error: 'Missing YouTube URL' });
+    if (!url) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing YouTube URL' });
 
     try {
         const info = await ytdl.getInfo(url);
         const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
         if (!audioFormats.length) throw new Error('No audio formats found.');
 
-        res.json({
+        sendVerticalJson(res, {
             creator: CREATOR,
             title: info.videoDetails.title,
             format: 'mp3',
             audio_url: audioFormats[0].url
         });
     } catch (err) {
-        res.status(500).json({ creator: CREATOR, error: err.message });
+        sendVerticalJson(res, { creator: CREATOR, error: err.message });
     }
 });
 
-// /dlytmp4
+// dlytmp4
 app.get('/dlytmp4', async (req, res) => {
     const { url } = req.query;
-    if (!url) return res.status(400).json({ creator: CREATOR, error: 'Missing YouTube URL' });
+    if (!url) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing YouTube URL' });
 
     try {
         const info = await ytdl.getInfo(url);
         const videoFormats = ytdl.filterFormats(info.formats, 'videoandaudio');
         if (!videoFormats.length) throw new Error('No video formats found.');
 
-        res.json({
+        sendVerticalJson(res, {
             creator: CREATOR,
             title: info.videoDetails.title,
             format: 'mp4',
             video_url: videoFormats[0].url
         });
     } catch (err) {
-        res.status(500).json({ creator: CREATOR, error: err.message });
+        sendVerticalJson(res, { creator: CREATOR, error: err.message });
     }
 });
 
-// /meme
+// meme
 app.get('/meme', async (req, res) => {
     try {
         const meme = await axios.get('https://meme-api.com/gimme');
-        res.json({
+        sendVerticalJson(res, {
             creator: CREATOR,
             title: meme.data.title,
             subreddit: meme.data.subreddit,
@@ -79,14 +87,14 @@ app.get('/meme', async (req, res) => {
             image_url: meme.data.url
         });
     } catch (err) {
-        res.status(500).json({ creator: CREATOR, error: err.message });
+        sendVerticalJson(res, { creator: CREATOR, error: err.message });
     }
 });
 
-// /gpt
+// gpt
 app.post('/gpt', async (req, res) => {
     const { prompt } = req.body;
-    if (!prompt) return res.status(400).json({ creator: CREATOR, error: 'Missing prompt' });
+    if (!prompt) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing prompt' });
 
     try {
         const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
@@ -97,36 +105,37 @@ app.post('/gpt', async (req, res) => {
             messages: [{ role: 'user', content: prompt }]
         });
 
-        res.json({
+        sendVerticalJson(res, {
             creator: CREATOR,
             prompt: prompt,
             response: response.data.choices[0].message.content
         });
     } catch (err) {
-        res.status(500).json({ creator: CREATOR, error: err.message });
+        sendVerticalJson(res, { creator: CREATOR, error: err.message });
     }
 });
 
-// /deepseek
+// deepseek
 app.post('/deepseek', async (req, res) => {
     const { query } = req.body;
-    if (!query) return res.status(400).json({ creator: CREATOR, error: 'Missing query' });
+    if (!query) return sendVerticalJson(res, { creator: CREATOR, error: 'Missing query' });
 
     try {
         const response = await axios.post('https://api.deepseek.com/search', { query }, {
             headers: { Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}` }
         });
 
-        res.json({
+        sendVerticalJson(res, {
             creator: CREATOR,
             query: query,
             results: response.data
         });
     } catch (err) {
-        res.status(500).json({ creator: CREATOR, error: err.message });
+        sendVerticalJson(res, { creator: CREATOR, error: err.message });
     }
 });
 
+// Start server
 app.listen(PORT, () => {
-    console.log(`✅ Joel XMD API running on port ${PORT}`);
+    console.log(`✅ Joel XMD API is running on port ${PORT}`);
 });
